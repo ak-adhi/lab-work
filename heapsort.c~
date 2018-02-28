@@ -1,0 +1,59 @@
+#include<stdio.h>
+void swap(int a[],int i,int j)
+{
+  int k;
+  k=a[i];
+  a[i]=a[j];
+  a[j]=k;
+}
+
+
+void max_heapify(int a[],int i, int limit)
+{
+  int largest;
+  int l=2*i;
+  int r=2*i+1;
+  if((l<=limit) && (a[i]<a[l]))
+    largest=l;
+  else
+    largest=i;
+  if((r<=limit) && (a[r]>a[largest]))
+    largest=r;
+  if(largest!=i)
+  {
+    swap(a,i,largest);
+    max_heapify(a,largest,limit);
+  }
+}
+
+void build_heap(int a[], int limit)
+{
+  int i;
+  for(i=limit/2;i>-1;i--)
+    max_heapify(a,i,limit);
+}
+
+void heapsort(int a[],int limit)
+{
+  build_heap(a,limit);
+  while(limit>0)
+  {
+    swap(a,limit,0);
+    limit-=1;
+    max_heapify(a,0,limit);
+  }
+}
+
+void main()
+{
+  int a[100],n,i;
+  printf("Enter limit : ");
+  scanf("%d",&n);
+  printf("Enter the elements one by one...\n");
+  for(i=0;i<n;i++)
+    scanf("%d",&a[i]);
+  heapsort(a,n-1);
+  printf("\nThe sorted list of elements : \n");
+  for(i=0;i<n;i++)
+    printf("%d ",a[i]);
+}

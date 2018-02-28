@@ -1,0 +1,196 @@
+#include<stdio.h>
+#include<malloc.h>
+
+ 
+struct node 
+{
+  int data;
+  struct node *l, *r;
+} *root=NULL;
+
+void search(int value,struct node* temp,struct node* parent)
+{
+  if(temp==NULL)
+    printf("%d not found \n",value);
+  else if(temp->data==value)
+    {printf("Element found !! \n");
+     printf("Parent element is : %d \n",parent->data);}
+  else if(value<temp->data)
+    search(value,temp->l,temp);
+  else
+    search(value,temp->r,temp);
+}
+void insert(int value)
+{
+  struct node* temp,*current,*parent;
+  struct node* new= (struct node *) malloc (sizeof(struct node));
+  new->data=value;
+  new->l=NULL;
+  new->r=NULL;
+  if(root==NULL)
+    root=new;  
+  else
+  { 
+    current=root;
+    parent=NULL;
+    while(1)
+    {
+      parent=current;
+      if(value<parent->data)
+      { current=current->l;
+        if (current==NULL)
+        {
+          parent->l=new;
+          return;
+        }
+      }
+      else
+      {  current=current->r;
+         if(current==NULL)
+         {
+           parent->r=new;
+           return;
+         }
+     }
+    
+  }
+}
+}
+
+void preorder(struct node* temp)
+{
+  if(temp!=NULL)
+  {
+    printf(" %d ",temp->data);
+    preorder(temp->l);
+    preorder(temp->r);
+  }
+}
+
+
+void postorder(struct node* temp)
+{
+  if(temp!=NULL)
+  {
+    postorder(temp->l);
+    postorder(temp->r);
+    printf(" %d ",temp->data);
+  }
+}
+
+
+void inorder(struct node* temp)
+{
+  if(temp!=NULL)
+  {
+    inorder(temp->l);
+    printf(" %d ",temp->data);
+    inorder(temp->r);    
+  }
+}
+
+
+struct node *min(struct node *mini)
+{
+    while( mini->l!=NULL)
+    {
+        mini=mini->l;
+    }
+    return mini;
+}
+struct node *pop(int element,struct node *root)
+{
+    if(root==NULL)
+    {
+        return root;
+    }
+    else if(root->data>element)
+    {
+        root->l=pop(element,root->l);
+    }
+    else if(root->data<element)
+    {
+        root->r=pop(element,root->r);
+    }
+    else
+    {
+        if(root->l==NULL)
+        {
+            struct node *temp=root->r;
+            free(root);
+            return temp;
+        }
+        else if(root->r==NULL)
+        {
+            struct node *temp=root->l;
+            free(root);
+            return temp;
+        }
+        struct node *temp=min(root->r);
+        root->data=temp->data;
+        root->r=pop(temp->data,root->r);
+    }
+    return root;
+}
+
+void main()
+{
+  int ch1,del_value,ins_value,i,n,s_value;
+  int ch2;
+  printf("     WELCOME \n1.Insert \n2.Delete \n3.Traversal \n4.Search \n5.Exit \n");
+  do
+  {
+    printf("\n\nEnter choice code** : ");
+    scanf("%d",&ch1);
+    if (ch1==3)
+    { 
+  
+      if (root==NULL)
+        printf("Binary search tree is empty\n");
+      else
+      {
+        printf("\n  1.Preorder \n  2.Inorder \n  3.Postorder \n");
+        printf("Enter choice code : ");
+        scanf("%d",&ch2);
+        switch (ch2) 
+        {
+          case 1 :  preorder(root);
+                      break;
+          case 2 :  inorder(root);
+                      break;
+          case 3 :  postorder(root);
+                      break;
+          default :  printf("Invalid input\n");
+        }
+
+      }
+    } 
+    else
+    {
+      switch (ch1) 
+      {
+        case 1 :  printf("Enter limit : ");
+                  scanf("%d",&n);
+                  printf("Enter the elements one by one...\n");
+                  for(i=0;i<n;i++)
+                  {
+                    scanf("%d",&ins_value);
+                    insert(ins_value);
+                  }
+                  printf("Insertion complete \n");
+                  break;
+        case 2 :  printf("Enter the value to delete : ");
+                  scanf("%d",&del_value);
+                  root=pop(del_value,root);
+                  break;
+        case 4 :  printf("Enter the value to search : ");
+                  scanf("%d",&s_value);
+                  search(s_value,root,root);
+                  break;
+        case 5 :  printf("Program terminated...\n\n");
+                  break;
+        default : printf("Invalid input, please try again...\n");
+      }
+    }
+  }while(ch1!=5);
+}
